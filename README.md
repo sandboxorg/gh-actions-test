@@ -2,4 +2,4 @@
 
 ![build](https://github.com/sandboxorg/gh-actions-test/workflows/build/badge.svg)
 
-v1.1
+v1.2
