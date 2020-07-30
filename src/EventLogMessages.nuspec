@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata minClientVersion="3.3">
+    <id>gh-actions-test</id>
+    <version>0.0.1-local</version>
+    <authors>C. Augusto Proiete</authors>
+    <owners>augustoproiete</owners>
+    <icon>images\icon.png</icon>
+    <iconUrl>https://raw.githubusercontent.com/augustoproiete/EventLogMessages/master/assets/event-log-messages-nuget.png</iconUrl>
+    <releaseNotes>https://github.com/augustoproiete/EventLogMessages/releases</releaseNotes>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">Apache-2.0</license>
+    <repository type="git" url="https://github.com/augustoproiete/EventLogMessages" />
+    <projectUrl>https://github.com/augustoproiete/EventLogMessages</projectUrl>
+    <description>
+      MessageResourceFile to be deployed together with your app, that you can use to create an EventSource in the Windows EventLog, and avoid the generic error message "The description for Event ID {0} in Source {1} cannot be found. The local computer may not have the necessary registry information or message DLL files to display the message, or you may not have permission to access them. The following information is part of the event... The message resource is present but the message was not found in the message table"
+    </description>
+    <copyright>Copyright (c) C. Augusto Proiete 2019-2020</copyright>
+    <language>en-US</language>
+    <tags>EventLogMessages EventLog EventViewer EventID, MessageResourceFile</tags>
+  </metadata>
+  <files>
+    <file src="build\EventLogMessages.props" target="build" />
+    <file src="tools\EventLogMessages.dll" target="tools" />
+    <file src="..\assets\event-log-messages-nuget.png" target="images\icon.png" />
+  </files>
+</package>

@@ -9,6 +9,8 @@ on:
       - '**/*.md'
       - '**/*.gitignore'
       - '**/*.gitattributes'
+    tags:
+    - '*.*.*'
   pull_request:
     paths-ignore:
       - '**/*.md'
@@ -17,18 +19,40 @@ on:
 
 jobs:
   build:
-    runs-on: windows-2016
-
+    name: Build
+    if: "!contains(github.event.head_commit.message, 'skip-ci')"
+    runs-on: ubuntu-latest
     steps:
-    - name: Get the source code
-      uses: actions/checkout@v2.3.1
-      with:
-        fetch-depth: 0
+      - name: Checkout
+        uses: actions/checkout@v2.3.1
+        with:
+          fetch-depth: 0
 
-    - name: Run a one-line script
-      run: echo Building!
+      - run: dotnet --info
 
-    - name: Run a multi-line script
-      run: |
-        echo Building
-        echo ........
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.302
+
+      - name: Build and Publish
+        shell: bash
+        env:
+            NUGET_API_KEY: ${{ secrets.MYGET_CI_API_KEY }}
+            DOTNET_CLI_TELEMETRY_OPTOUT: true
+        run: |
+          # Restore .NET tools
+          dotnet tool restore
+
+          # Get the version number
+          VERSION=$(dotnet minver --tag-prefix v --verbosity error --default-pre-release-phase preview)
+          echo version=$VERSION
+
+          # Run the build script
+          dotnet cake --target="publish" --packageVersion="$VERSION"
+
+      - name: Artifacts
+        uses: actions/upload-artifact@v2.1.1
+        with:
+          name: artifacts
+          path: build/packages/**/*
