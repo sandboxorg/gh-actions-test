@@ -2,23 +2,21 @@ name: CI
 
 on:
   push:
-    branches:
-    - master
-    - release-*
     paths-ignore:
       - '**/*.md'
       - '**/*.gitignore'
       - '**/*.gitattributes'
+    branches:
+    - '**'
     tags:
     - '*.*.*'
   pull_request:
     paths-ignore:
       - '**/*.md'
-      - '**/*.gitignore'
-      - '**/*.gitattributes'
 
 env:
   DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
   build:
@@ -31,19 +29,18 @@ jobs:
         with:
           fetch-depth: 0
 
-      - run: dotnet --info
-
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 3.1.302
+
+      - run: dotnet --info
 
       - name: Build and Publish
         shell: bash
         env:
             NUGET_API_KEY: ${{ secrets.MYGET_CI_AUGUSTOPROIETE_API_KEY }}
             SUPERSECRETVALUE:  ${{ secrets.SUPERSECRETVALUE }}
-            DOTNET_CLI_TELEMETRY_OPTOUT: true
         run: |
           # Restore .NET tools
           dotnet tool restore
@@ -58,5 +55,5 @@ jobs:
       - name: Artifacts
         uses: actions/upload-artifact@v2.1.1
         with:
-          name: artifacts
-          path: build/packages/**/*
+          name: artifacts.zip
+          path: build/packages/**/*.nupkg
