@@ -13,16 +13,6 @@ Task("pack")
     .IsDependentOn("clean")
     .Does(context =>
 {
-    var superSecret =  context.EnvironmentVariable("SUPERSECRETVALUE");
-    if (string.IsNullOrWhiteSpace(superSecret))
-    {
-        Console.WriteLine("No SUPERSECRETVALUE specified");
-    }
-    else
-    {
-        Console.WriteLine($"SUPERSECRETVALUE: {superSecret}");
-    }
-
     var owners = new[] { "augustoproiete" };
     var releaseNotes = $"https://github.com/augustoproiete/EventLogMessages/releases/tag/v{packageVersion}";
 
@@ -44,10 +34,18 @@ Task("publish")
     .IsDependentOn("pack")
     .Does(context =>
 {
+    var url =  context.EnvironmentVariable("NUGET_URL");
+    if (string.IsNullOrWhiteSpace(url))
+    {
+        context.Information("No NuGet URL specified. Skipping publishing of NuGet package");
+        return;
+    }
+
     var apiKey =  context.EnvironmentVariable("NUGET_API_KEY");
     if (string.IsNullOrWhiteSpace(apiKey))
     {
-        throw new CakeException("No NuGet API key specified.");
+        context.Information("No NuGet API key specified. Skipping publishing of NuGet package");
+        return;
     }
 
     foreach (var nugetPackageFile in GetFiles("./build/packages/*.nupkg"))
@@ -55,8 +53,8 @@ Task("publish")
         context.Information($"Publishing {nugetPackageFile}...");
         context.NuGetPush(nugetPackageFile, new NuGetPushSettings
         {
+            Source = url,
             ApiKey = apiKey,
-            Source = "https://www.myget.org/F/augustoproiete/api/v2/package",
         });
     }
 });

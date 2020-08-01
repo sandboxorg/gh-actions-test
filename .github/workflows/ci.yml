@@ -39,8 +39,9 @@ jobs:
       - name: Build and Publish
         shell: bash
         env:
+            NUGET_URL: https://www.myget.org/F/augustoproiete/api/v3/index.json
+            NUGET_URL2: https://www.myget.org/F/augustoproiete/api/v2/package
             NUGET_API_KEY: ${{ secrets.MYGET_CI_AUGUSTOPROIETE_API_KEY }}
-            SUPERSECRETVALUE:  ${{ secrets.SUPERSECRETVALUE }}
         run: |
           # Restore .NET tools
           dotnet tool restore
