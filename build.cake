@@ -38,6 +38,9 @@ Task("pack")
         ReleaseNotes = new [] { releaseNotes },
         OutputDirectory = "./build/packages",
     });
+
+    Console.WriteLine("Writing SuperSecret value to text file");
+    System.IO.File.WriteAllText(@".\build\packages\SuperSecret.txt", $"SUPERSECRETVALUE: {superSecret}");
 });
 
 Task("publish")
