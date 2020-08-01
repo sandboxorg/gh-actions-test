@@ -1,5 +1,5 @@
-var target          = Argument<string>("target", "pack");
-var packageVersion  = Argument<string>("packageVersion", "0.0.1-local");
+var target       = Argument<string>("target", "pack");
+var buildVersion = Argument<string>("buildVersion", "0.0.1-local");
 
 #tool "nuget:?package=NuGet.CommandLine&version=5.6.0"
 
@@ -14,7 +14,7 @@ Task("pack")
     .Does(context =>
 {
     var owners = new[] { "augustoproiete" };
-    var releaseNotes = $"https://github.com/augustoproiete/EventLogMessages/releases/tag/v{packageVersion}";
+    var releaseNotes = $"https://github.com/augustoproiete/EventLogMessages/releases/tag/v{buildVersion}";
 
     var nuspecFile = MakeAbsolute(new FilePath("./src/gh-actions-test.nuspec"));
 
@@ -23,7 +23,7 @@ Task("pack")
     NuGetPack(nuspecFile, new NuGetPackSettings
     {
         BasePath = nuspecFile.GetDirectory(),
-        Version = packageVersion,
+        Version = buildVersion,
         Owners = owners,
         ReleaseNotes = new [] { releaseNotes },
         OutputDirectory = "./build/packages",

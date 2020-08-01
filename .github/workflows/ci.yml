@@ -24,6 +24,11 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'skip-ci')"
     runs-on: ubuntu-latest
     steps:
+      - name: Show GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
       - name: Checkout
         uses: actions/checkout@v2.3.1
         with:
@@ -34,7 +39,8 @@ jobs:
         with:
           dotnet-version: 3.1.302
 
-      - run: dotnet --info
+      - name: Show dotnet --info
+        run: dotnet --info
 
       - name: Build and Publish
         shell: bash
@@ -42,15 +48,12 @@ jobs:
             NUGET_URL: https://www.myget.org/F/augustoproiete/api/v3/index.json
             NUGET_API_KEY: ${{ secrets.MYGET_CI_AUGUSTOPROIETE_API_KEY }}
         run: |
-          # Restore .NET tools
           dotnet tool restore
 
-          # Get the version number
           VERSION=$(dotnet minver --tag-prefix v --verbosity error --default-pre-release-phase preview)
           echo version=$VERSION
 
-          # Run the build script
-          dotnet cake --target="publish" --packageVersion="$VERSION"
+          dotnet cake --target="publish" --buildVersion="$VERSION"
 
       - name: Artifacts
         uses: actions/upload-artifact@v2.1.1
