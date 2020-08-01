@@ -56,5 +56,5 @@ jobs:
       - name: Artifacts
         uses: actions/upload-artifact@v2.1.1
         with:
-          name: artifacts.zip
+          name: artifacts
           path: build/packages/**/*.nupkg
