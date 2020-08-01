@@ -20,7 +20,7 @@
     <tags>EventLogMessages EventLog EventViewer EventID, MessageResourceFile</tags>
   </metadata>
   <files>
-    <file src="build\EventLogMessages.props" target="build" />
+    <file src="build\gh-actions-test.props" target="build" />
     <file src="tools\EventLogMessages.dll" target="tools" />
     <file src="..\assets\event-log-messages-nuget.png" target="images\icon.png" />
   </files>

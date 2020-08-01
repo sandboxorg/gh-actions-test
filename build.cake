@@ -26,7 +26,7 @@ Task("pack")
     var owners = new[] { "augustoproiete" };
     var releaseNotes = $"https://github.com/augustoproiete/EventLogMessages/releases/tag/v{packageVersion}";
 
-    var nuspecFile = MakeAbsolute(new FilePath("./src/EventLogMessages.nuspec"));
+    var nuspecFile = MakeAbsolute(new FilePath("./src/gh-actions-test.nuspec"));
 
     context.Information($"Packing {nuspecFile}...");
 
