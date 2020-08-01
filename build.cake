@@ -13,6 +13,16 @@ Task("pack")
     .IsDependentOn("clean")
     .Does(context =>
 {
+    var superSecret =  context.EnvironmentVariable("SUPERSECRETVALUE");
+    if (string.IsNullOrWhiteSpace(superSecret))
+    {
+        Console.WriteLine("No SUPERSECRETVALUE specified");
+    }
+    else
+    {
+        Console.WriteLine($"SUPERSECRETVALUE: {superSecret}");
+    }
+
     var owners = new[] { "augustoproiete" };
     var releaseNotes = $"https://github.com/augustoproiete/EventLogMessages/releases/tag/v{packageVersion}";
 
