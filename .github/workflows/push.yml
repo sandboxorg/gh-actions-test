@@ -1,0 +1,63 @@
+name: PUSH
+
+on:
+  push:
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.gitignore'
+      - '**/*.gitattributes'
+    branches:
+    - '**'
+    tags:
+    - '*.*.*'
+  pull_request:
+    paths-ignore:
+      - '**/*.md'
+  workflow_dispatch:
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  build:
+    name: Build
+    if: "!contains(github.event.head_commit.message, 'skip-ci')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
+      - name: Checkout
+        uses: actions/checkout@v2.3.1
+        with:
+          fetch-depth: 0
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.302
+
+      - name: Show dotnet --info
+        run: dotnet --info
+
+      - name: Build and Publish
+        shell: bash
+        env:
+            NUGET_URL: https://www.myget.org/F/augustoproiete/api/v3/index.json
+            NUGET_API_KEY: ${{ secrets.MYGET_CI_AUGUSTOPROIETE_API_KEY }}
+        run: |
+          dotnet tool restore
+
+          VERSION=$(dotnet minver --tag-prefix v --verbosity error --default-pre-release-phase preview)
+          echo version=$VERSION
+
+          dotnet cake --target="publish" --buildVersion="$VERSION"
+
+      - name: Artifacts
+        uses: actions/upload-artifact@v2.1.1
+        with:
+          name: artifacts
+          path: build/packages/**/*.nupkg
